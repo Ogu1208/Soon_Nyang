@@ -1,0 +1,27 @@
+#default 공통설정
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+
+--- # local
+spring:
+  config:
+    activate:
+      on-profile: "db-local"
+  jpa:
+    show-sql: true
+    database-platform: H2
+    hibernate:
+      ddl-auto: create
+  datasource:
+    url: jdbc:h2:mem:localdb
+  h2:
+    console:
+      enabled: true
