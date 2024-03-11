@@ -37,12 +37,14 @@ public class CatDetailResponse {
         this.lng = lng;
     }
 
-    public CatDetailResponse(Cat cat) {
-        this.catId = cat.getCatId();
-        this.name = cat.getName();
-        this.age = cat.getAge();
-        this.gender = cat.getGender();
-        this.followerCnt = cat.getFollowerCnt();
-        this.imageUrl = cat.getImageUrl();
+    public static CatDetailResponse from(Cat cat) {
+        return CatDetailResponse.builder()
+                .catId(cat.getCatId())
+                .name(cat.getName())
+                .age(cat.getAge())
+                .gender(cat.getGender())
+                .followerCnt(cat.getFollowerCnt())
+                .imageUrl(cat.getImageUrl())
+                .build();
     }
 }

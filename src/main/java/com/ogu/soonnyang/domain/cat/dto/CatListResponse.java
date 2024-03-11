@@ -1,5 +1,6 @@
 package com.ogu.soonnyang.domain.cat.dto;
 
+import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.cat.entity.type.CatGender;
 import lombok.Builder;
 
@@ -19,5 +20,16 @@ public class CatListResponse {
         this.gender = gender;
         this.followerCnt = followerCnt;
         this.imageUrl = imageUrl;
+    }
+
+    public static CatListResponse from(Cat cat) {
+        return CatListResponse.builder()
+                .catId(cat.getCatId())
+                .name(cat.getName())
+                .age(cat.getAge())
+                .gender(cat.getGender())
+                .followerCnt(cat.getFollowerCnt())
+                .imageUrl(cat.getImageUrl())
+                .build();
     }
 }
