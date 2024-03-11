@@ -1,6 +1,6 @@
 package com.ogu.soonnyang.domain.cat.entity;
 
-import com.ogu.soonnyang.domain.cat.dto.CatInfoReq;
+import com.ogu.soonnyang.domain.cat.dto.CatInfoRequest;
 import com.ogu.soonnyang.domain.cat.entity.type.CatGender;
 import com.ogu.soonnyang.domain.cat.entity.type.CatState;
 import jakarta.persistence.*;
@@ -20,18 +20,18 @@ public class Cat {
     private Integer age;
     private CatGender gender;
     private Long followerCnt;
-    private String image;
+    private String imageUrl;
     @Column(name = "is_active", nullable = false)
     @ColumnDefault("'ACTIVE'")
     @Enumerated(EnumType.STRING)
     private CatState isActive;
 
     @Builder
-    public Cat(CatInfoReq catInfoReq, String image) {
-        this.name = catInfoReq.getName();
-        this.age = catInfoReq.getAge();
-        this.gender = catInfoReq.getGender();
-        this.image = image;
+    public Cat(CatInfoRequest catInfoRequest, String imageUrl) {
+        this.name = catInfoRequest.getName();
+        this.age = catInfoRequest.getAge();
+        this.gender = catInfoRequest.getGender();
+        this.imageUrl = imageUrl;
     }
 
     public void updateFollowCnt(Long followerCnt) {

@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @Getter
 @Builder
-public class CatInfoReq {
+public class CatInfoRequest {
     private String name;
     private Integer age;
     private CatGender gender;
