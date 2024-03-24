@@ -32,6 +32,7 @@ public class Cat {
         this.name = createCatRequest.getName();
         this.age = createCatRequest.getAge();
         this.gender = createCatRequest.getGender();
+        this.followerCnt = 0L;
         this.imageUrl = imageUrl;
         this.isActive = CatState.ACTIVE;
     }
