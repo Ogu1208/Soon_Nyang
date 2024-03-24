@@ -17,13 +17,12 @@ public enum CatState {
     private String description;
 
     @JsonCreator
-    public static CatState from(String value) {
-        for (CatState catState : CatState.values()) {
-            if (catState.getDescription().equals(value)) {
-                return catState;
-            }
+    public CatState convert(String catState) {
+        try {
+            return CatState.valueOf(catState.toUpperCase());
+        } catch (ApplicationException e) {
+            log.debug("CatState.convert() exception occur value: {}", catState);
+            throw new ApplicationException(ErrorCode.INVALID_CAT_STATUS);
         }
-        log.debug("CatState.from() exception occur value: {}", value);
-        throw new ApplicationException(ErrorCode.INVALID_CAT_STATUS);
     }
 }

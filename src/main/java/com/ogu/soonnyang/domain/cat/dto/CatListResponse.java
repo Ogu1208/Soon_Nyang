@@ -2,8 +2,16 @@ package com.ogu.soonnyang.domain.cat.dto;
 
 import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.cat.entity.type.CatGender;
+import com.querydsl.core.annotations.QueryProjection;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CatListResponse {
     private Long catId;
     private String name;
@@ -11,16 +19,7 @@ public class CatListResponse {
     private CatGender gender;
     private Long followerCnt;
     private String imageUrl;
-
-    @Builder
-    public CatListResponse(Long catId, String name, Integer age, CatGender gender, Long followerCnt, String imageUrl) {
-        this.catId = catId;
-        this.name = name;
-        this.age = age;
-        this.gender = gender;
-        this.followerCnt = followerCnt;
-        this.imageUrl = imageUrl;
-    }
+    private Long isFollowing;
 
     public static CatListResponse from(Cat cat) {
         return CatListResponse.builder()
@@ -31,5 +30,16 @@ public class CatListResponse {
                 .followerCnt(cat.getFollowerCnt())
                 .imageUrl(cat.getImageUrl())
                 .build();
+    }
+
+    @QueryProjection
+    public CatListResponse(Cat cat, Long isFollowing) {
+        this.catId = cat.getCatId();
+        this.name = cat.getName();
+        this.age = cat.getAge();
+        this.gender = cat.getGender();
+        this.followerCnt = cat.getFollowerCnt();
+        this.imageUrl = cat.getImageUrl();
+        this.isFollowing = isFollowing;
     }
 }

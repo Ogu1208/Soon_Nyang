@@ -11,19 +11,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AllArgsConstructor
 public enum CatGender {
-    MALE("남자"),
-    FEMALE("여자");
+    MALE,
+    FEMALE;
 
-    private final String description;
 
     @JsonCreator
-    public static CatGender from(String value) {
-        for (CatGender gender : CatGender.values()) {
-            if (gender.getDescription().equals(value)) {
-                return gender;
-            }
+    public CatGender convert(String gender) {
+        try {
+            return CatGender.valueOf(gender.toUpperCase());
+        } catch (ApplicationException e) {
+            log.debug("CatGender.convert() exception occur value: {}", gender);
+            throw new ApplicationException(ErrorCode.INVALID_CAT_GENDER);
         }
-        log.debug("CatGender.from() exception occur sub: {}", value);
-        throw new ApplicationException(ErrorCode.INVALID_CAT_GENDER);
     }
 }

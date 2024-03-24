@@ -11,11 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @Getter
 @Builder
-public class CatInfoRequest {
+public class CreateCatRequest {
     private String name;
     private Integer age;
     private CatGender gender;
-    private MultipartFile image;
-    private Float lat;
-    private Float lng;
+//    private MultipartFile image;
+//    private Float lat;
+//    private Float lng;
 }

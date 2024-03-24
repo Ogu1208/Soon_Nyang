@@ -1,11 +1,12 @@
 package com.ogu.soonnyang.domain.cat.service;
 
 import com.ogu.soonnyang.domain.cat.dto.CatDetailResponse;
-import com.ogu.soonnyang.domain.cat.dto.CatInfoRequest;
 import com.ogu.soonnyang.domain.cat.dto.CatListResponse;
+import com.ogu.soonnyang.domain.cat.dto.CreateCatRequest;
 import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.cat.repository.CatCustomRepository;
 import com.ogu.soonnyang.domain.cat.repository.CatRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +24,8 @@ public class CatService {
     private final CatCustomRepository catCustomRepository;
 
     /* POST) 고양이 생성 */
-    public Long save(Long memberId, CatInfoRequest catInfoReq) {
+    public Long save(Long memberId, CreateCatRequest catInfoReq, MultipartFile image) {
         // S3에 이미지 등록
-        MultipartFile multipartFile = catInfoReq.getImage();
         String imgUrl = "https://blog.kakaocdn.net/dn/bBkc9z/btqGTm2me0v/qj8u2JvrqgVn3ZFnuK2oKk/img.jpg";
 
 //        try {
@@ -35,7 +35,7 @@ public class CatService {
 //            throw new IllegalArgumentException("파일 업로드에 실패했습니다 : cat upload failed");
 //        }
         LOGGER.info("================image url===============\n" + imgUrl);
-
+        // 멤버 유효성 검사
         Cat cat = new Cat(catInfoReq, imgUrl);
         catRepository.save(cat);
 
@@ -43,24 +43,19 @@ public class CatService {
     }
 
     /* GET) 고양이 리스트 조회 */
-    public List<CatListResponse> getCats() {
-        List<Cat> cats =catRepository.findAll();
-
+    public List<CatListResponse> getCats(Long memberId) {
+        List<Cat> cats = catRepository.findAll();
+//        catCustomRepository.getCats(memberId);
         List<CatListResponse> catListResponses = new ArrayList<>();
 
-        for(Cat cat : cats) {
-            CatListResponse catResponse = CatListResponse.from(cat);
-            catListResponses.add(catResponse);
-        }
-
-        return catListResponses;
+        return catRepository.findAll().stream()
+                .map(CatListResponse::from).toList();
     }
 
     /* GET) 고양이 상세 조회 */
     public CatDetailResponse getCat(Long catId) {
         Cat cat = catRepository.findCatByCatId(catId)
-                .orElseThrow(() -> new IllegalArgumentException());
-
+                .orElseThrow(() -> new EntityNotFoundException("Cat not found with id: " + catId));
 
         return CatDetailResponse.from(cat);
     }

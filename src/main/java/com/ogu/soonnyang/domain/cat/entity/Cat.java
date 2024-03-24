@@ -1,6 +1,6 @@
 package com.ogu.soonnyang.domain.cat.entity;
 
-import com.ogu.soonnyang.domain.cat.dto.CatInfoRequest;
+import com.ogu.soonnyang.domain.cat.dto.CreateCatRequest;
 import com.ogu.soonnyang.domain.cat.entity.type.CatGender;
 import com.ogu.soonnyang.domain.cat.entity.type.CatState;
 import jakarta.persistence.*;
@@ -10,14 +10,15 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class Cat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long catId;
     private String name;
     private Integer age;
+    @Enumerated(EnumType.STRING)
     private CatGender gender;
     private Long followerCnt;
     private String imageUrl;
@@ -27,11 +28,12 @@ public class Cat {
     private CatState isActive;
 
     @Builder
-    public Cat(CatInfoRequest catInfoRequest, String imageUrl) {
-        this.name = catInfoRequest.getName();
-        this.age = catInfoRequest.getAge();
-        this.gender = catInfoRequest.getGender();
+    public Cat(CreateCatRequest createCatRequest, String imageUrl) {
+        this.name = createCatRequest.getName();
+        this.age = createCatRequest.getAge();
+        this.gender = createCatRequest.getGender();
         this.imageUrl = imageUrl;
+        this.isActive = CatState.ACTIVE;
     }
 
     public void updateFollowCnt(Long followerCnt) {
