@@ -1,7 +1,5 @@
 package com.ogu.soonnyang.domain.cat.dto;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.cat.entity.type.CatGender;
 import lombok.*;
@@ -18,8 +16,8 @@ public class CatDetailResponse {
     private CatGender gender;
     private Long followerCnt;
     private String imageUrl;
-    private Float lat;
-    private Float lng;
+    private Float latitude;
+    private Float longitude;
 
     public static CatDetailResponse from(Cat cat) {
         return CatDetailResponse.builder()
