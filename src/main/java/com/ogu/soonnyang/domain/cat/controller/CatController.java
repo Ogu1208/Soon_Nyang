@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/cats")
+@RequestMapping("/v1/cats")
 public class CatController {
     private final Logger LOGGER = LoggerFactory.getLogger(CatController.class);
     private final CatService catService;
@@ -29,7 +29,7 @@ public class CatController {
         LOGGER.info("=========================insertCat===================================");
         Long memberId = 1L;
         final Long catId = catService.save(memberId, createCatRequest, image);
-        return ResponseEntity.created(URI.create("/api/cats/" + catId)).build();
+        return ResponseEntity.created(URI.create("/v1/cats/" + catId)).build();
     }
 
     // 고양이 리스트 조회
