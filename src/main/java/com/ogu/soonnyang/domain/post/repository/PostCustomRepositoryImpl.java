@@ -24,7 +24,7 @@ public class PostCustomRepositoryImpl implements PostCumtomRepository {
     QMember qMember = QMember.member;
 
     @Override
-    public Page findAllNotDeleted(Pageable pageable) {
+    public Page<PostListResponse> findAllNotDeleted(Pageable pageable) {
         List<PostListResponse> content = jpaQueryFactory
                 .select(new QPostListResponse(qPost, qCat, qMember))
                 .from(qPost)
