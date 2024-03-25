@@ -1,8 +1,6 @@
 package com.ogu.soonnyang.domain.post.service;
 
-import com.ogu.soonnyang.domain.cat.dto.CreateCatRequest;
 import com.ogu.soonnyang.domain.cat.entity.Cat;
-import com.ogu.soonnyang.domain.cat.repository.CatRepository;
 import com.ogu.soonnyang.domain.member.entity.Member;
 import com.ogu.soonnyang.domain.post.dto.CreatePostRequest;
 import com.ogu.soonnyang.domain.post.entity.Post;

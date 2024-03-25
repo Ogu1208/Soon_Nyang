@@ -5,17 +5,18 @@ import com.ogu.soonnyang.domain.cat.repository.CatRepository;
 import com.ogu.soonnyang.domain.member.entity.Member;
 import com.ogu.soonnyang.domain.member.repository.MemberRepository;
 import com.ogu.soonnyang.domain.post.dto.CreatePostRequest;
+import com.ogu.soonnyang.domain.post.dto.PostListResponse;
 import com.ogu.soonnyang.domain.post.entity.Post;
 import com.ogu.soonnyang.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +39,18 @@ public class PostService {
 
 
         return post.getPostId();
+    }
+
+    public Page<PostListResponse> searchAllPost(Long memberId, Pageable pageable) {
+        Page<PostListResponse> page = postRepository.findAllNotDeleted(pageable);
+        List<PostListResponse> postListResponses = page.getContent();
+
+        for (PostListResponse postListRespons : postListResponses) {
+            postListRespons.setMyEmotion("like");
+            // TODO: 직접 가져와서 좋아요 여부 setting
+//            postListRespons.setMyEmotion(postLikeRepository.checkReation(memberId, postListRespons.getPostId()));
+        }
+
+        return page;
     }
 }
