@@ -1,13 +1,10 @@
 package com.ogu.soonnyang.domain.cat.dto;
 
 import com.ogu.soonnyang.domain.cat.entity.type.CatGender;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
 @Builder
