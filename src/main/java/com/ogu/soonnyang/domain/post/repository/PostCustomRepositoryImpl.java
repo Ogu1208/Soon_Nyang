@@ -15,7 +15,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class PostCustomRepositoryImpl implements PostCumtomRepository {
+public class PostCustomRepositoryImpl implements PostCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 

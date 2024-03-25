@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 
 @Repository
-public interface PostCumtomRepository {
+public interface PostCustomRepository {
 
     Page<PostListResponse> findAllNotDeleted(Pageable pageable);
 }

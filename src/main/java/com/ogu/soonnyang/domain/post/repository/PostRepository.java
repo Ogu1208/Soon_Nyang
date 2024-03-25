@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long>, PostCumtomRepository {
+public interface PostRepository extends JpaRepository<Post, Long>, PostCustomRepository {
     List<Post> findTop10ByCat_CatIdOrderByCreatedAtDesc(Long catId);
 
     List<Post> findByCat_CatIdOrderByCreatedAtDesc(Long catId);
