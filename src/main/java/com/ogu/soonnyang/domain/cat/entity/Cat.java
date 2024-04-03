@@ -1,7 +1,6 @@
 package com.ogu.soonnyang.domain.cat.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ogu.soonnyang.domain.cat.dto.CreateCatRequest;
+import com.ogu.soonnyang.domain.cat.dto.CatRequest;
 import com.ogu.soonnyang.domain.cat.entity.type.CatGender;
 import com.ogu.soonnyang.domain.cat.entity.type.CatState;
 import jakarta.persistence.*;
@@ -37,7 +36,7 @@ public class Cat {
     private LocalDate TNRDate;
 
 //    @Builder
-//    public Cat(CreateCatRequest createCatRequest, String imageUrl) {
+//    public Cat(CatRequest createCatRequest, String imageUrl) {
 //        this.name = createCatRequest.getName();
 //        this.age = createCatRequest.getAge();
 //        this.gender = createCatRequest.getGender();
@@ -45,6 +44,14 @@ public class Cat {
 //        this.imageUrl = imageUrl;
 //        this.isActive = CatState.ACTIVE;
 //    }
+
+    public void updateCat(CatRequest catRequest, String imageUrl) {
+        this.name = catRequest.getName();
+        this.age = catRequest.getAge();
+        this.gender = catRequest.getGender();
+        this.TNRDate = catRequest.getTNRDate();
+        this.imageUrl = imageUrl;
+    }
 
     public void updateFollowCnt(Long followerCnt) {
         this.followerCnt = followerCnt;

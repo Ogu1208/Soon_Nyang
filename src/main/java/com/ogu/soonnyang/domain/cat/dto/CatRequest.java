@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Builder
-public class CreateCatRequest {
+public class CatRequest {
     private String name;
     private Integer age;
     private CatGender gender;

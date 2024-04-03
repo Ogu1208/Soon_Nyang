@@ -1,6 +1,6 @@
 package com.ogu.soonnyang.domain.cat.service;
 
-import com.ogu.soonnyang.domain.cat.dto.CreateCatRequest;
+import com.ogu.soonnyang.domain.cat.dto.CatRequest;
 import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.cat.entity.type.CatState;
 import com.ogu.soonnyang.domain.cat.repository.CatRepository;
@@ -17,7 +17,7 @@ public class CatFactory {
     private final CatRepository catRepository;
 
     @Transactional
-    public Cat save(CreateCatRequest request, String imageUrl) {
+    public Cat save(CatRequest request, String imageUrl) {
 
         log.info("request 의 TNRDate: " + request.getTNRDate());
 
