@@ -6,6 +6,8 @@ import com.ogu.soonnyang.domain.cat.entity.type.CatState;
 import com.ogu.soonnyang.domain.member.entity.Member;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
@@ -19,6 +21,7 @@ public class CatDTO {
     private Long followerCnt;
     private String imageUrl;
     private CatState isActive;
+    private LocalDate TNRDate;
 
     public static CatDTO from(Cat entity) {
         return CatDTO.builder()
@@ -32,8 +35,15 @@ public class CatDTO {
     }
 
     public Cat toEntity() {
-        return new Cat(
-                catId,name,age,gender,followerCnt,imageUrl,isActive
-        );
+        return Cat.builder()
+                .catId(this.catId)
+                .name(this.name)
+                .age(this.age)
+                .gender(this.gender)
+                .followerCnt(this.getFollowerCnt())
+                .imageUrl(this.imageUrl)
+                .TNRDate(this.getTNRDate())
+                .isActive(this.isActive)
+                .build();
     }
 }

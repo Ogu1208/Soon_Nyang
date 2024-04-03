@@ -5,6 +5,8 @@ import com.ogu.soonnyang.domain.cat.entity.type.CatGender;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,7 +18,9 @@ public class CatListResponse {
     private CatGender gender;
     private Long followerCnt;
     private String imageUrl;
+    private LocalDate TNRDate;
     private Long isFollowing;
+
 
     public static CatListResponse from(Cat cat) {
         return CatListResponse.builder()
@@ -26,6 +30,8 @@ public class CatListResponse {
                 .gender(cat.getGender())
                 .followerCnt(cat.getFollowerCnt())
                 .imageUrl(cat.getImageUrl())
+                .TNRDate(cat.getTNRDate())
+                .isFollowing(0L)
                 .build();
     }
 

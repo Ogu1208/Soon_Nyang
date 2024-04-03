@@ -6,8 +6,10 @@ import com.ogu.soonnyang.domain.cat.entity.type.CatState;
 import com.ogu.soonnyang.domain.cat.repository.CatRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CatFactory {
@@ -17,6 +19,8 @@ public class CatFactory {
     @Transactional
     public Cat save(CreateCatRequest request, String imageUrl) {
 
+        log.info("request 의 TNRDate: " + request.getTNRDate());
+
         Cat cat = Cat.builder()
                 .name(request.getName())
                 .age(request.getAge())
@@ -24,9 +28,12 @@ public class CatFactory {
                 .followerCnt(0L)
                 .imageUrl(imageUrl)
                 .isActive(CatState.ACTIVE)
+                .TNRDate(request.getTNRDate())
                 .build();
 
         catRepository.save(cat);
+
+        log.info("cat 의 TNRDate: " + cat.getTNRDate());
 
         return cat;
     }
