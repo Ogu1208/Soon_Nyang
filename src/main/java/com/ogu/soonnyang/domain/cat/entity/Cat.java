@@ -56,4 +56,8 @@ public class Cat {
     public void updateFollowCnt(Long followerCnt) {
         this.followerCnt = followerCnt;
     }
+
+    public void deleteCat(Long catId) {
+        this.isActive = CatState.INACTIVE;
+    }
 }

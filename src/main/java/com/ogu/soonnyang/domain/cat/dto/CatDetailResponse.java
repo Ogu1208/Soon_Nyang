@@ -2,6 +2,7 @@ package com.ogu.soonnyang.domain.cat.dto;
 
 import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.cat.entity.type.CatGender;
+import com.ogu.soonnyang.domain.cat.entity.type.CatState;
 import lombok.*;
 
 @Getter
@@ -18,6 +19,7 @@ public class CatDetailResponse {
     private String imageUrl;
     private Float latitude;
     private Float longitude;
+    private CatState catState;
 
     public static CatDetailResponse from(Cat cat) {
         return CatDetailResponse.builder()
@@ -27,6 +29,7 @@ public class CatDetailResponse {
                 .gender(cat.getGender())
                 .followerCnt(cat.getFollowerCnt())
                 .imageUrl(cat.getImageUrl())
+                .catState(cat.getIsActive())
                 .build();
     }
 }

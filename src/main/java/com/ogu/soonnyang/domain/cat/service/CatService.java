@@ -4,6 +4,7 @@ import com.ogu.soonnyang.domain.cat.dto.CatDetailResponse;
 import com.ogu.soonnyang.domain.cat.dto.CatListResponse;
 import com.ogu.soonnyang.domain.cat.dto.CatRequest;
 import com.ogu.soonnyang.domain.cat.entity.Cat;
+import com.ogu.soonnyang.domain.cat.entity.type.CatState;
 import com.ogu.soonnyang.domain.cat.repository.CatCustomRepository;
 import com.ogu.soonnyang.domain.cat.repository.CatRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -49,11 +50,12 @@ public class CatService {
     /* GET) 고양이 리스트 조회 */
     @Transactional(readOnly = true)
     public List<CatListResponse> getCats(Long memberId) {
-        List<Cat> cats = catRepository.findAll();
+//        List<Cat> cats = catRepository.findAll();
+        List<Cat> cats = catRepository.findCatByIsActive(CatState.ACTIVE);
 //        catCustomRepository.getCats(memberId);
-        List<CatListResponse> catListResponses = new ArrayList<>();
-
-        return catRepository.findAll().stream()
+//        return catRepository.findAll().stream()
+//                .map(CatListResponse::from).toList();
+        return catRepository.findCatByIsActive(CatState.ACTIVE).stream()
                 .map(CatListResponse::from).toList();
     }
 
@@ -82,5 +84,12 @@ public class CatService {
         Cat cat = catRepository.findById(catId)
                 .orElseThrow(() -> new IllegalArgumentException("Thesis not found with Id : " + catId));
         cat.updateCat(catRequest, imgUrl);
+    }
+
+    @Transactional
+    public void deleteCat(Long catId) {
+        Cat cat = catRepository.findById(catId)
+                .orElseThrow(() -> new IllegalArgumentException("Thesis not found with Id : " + catId));
+        cat.deleteCat(catId);
     }
 }

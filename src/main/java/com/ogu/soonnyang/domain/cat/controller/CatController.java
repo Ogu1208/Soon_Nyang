@@ -53,6 +53,7 @@ public class CatController {
         return ResponseEntity.ok().body(catDetailResp);
     }
 
+    // 특정 고양이 수정
     @Transactional
     @PutMapping("/{catId}")
     public ResponseEntity<MessageDTO> updateCat(
@@ -65,6 +66,21 @@ public class CatController {
         MessageDTO messageDTO = MessageDTO.builder()
                 .status(HttpStatus.OK.value())
                 .message("catId : " + catId + " 가 정상적으로 수정되었습니다.")
+                .redirectURI(null)
+                .build();
+
+        return ResponseEntity.ok().body(messageDTO);
+    }
+
+    // 특정 고양이 삭제
+    @Transactional
+    @DeleteMapping("/{catId}")
+    public ResponseEntity<MessageDTO> deleteCat(@PathVariable("catId") Long catId) {
+        catService.deleteCat(catId);
+
+        MessageDTO messageDTO = MessageDTO.builder()
+                .status(HttpStatus.OK.value())
+                .message("catId : " + catId + " 가 정상적으로 삭제되었습니다.")
                 .redirectURI(null)
                 .build();
 
