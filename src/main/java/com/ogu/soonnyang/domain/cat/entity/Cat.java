@@ -22,7 +22,7 @@ public class Cat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long catId;
     private String name;
-    private Integer age;
+    private String age;
     @Enumerated(EnumType.STRING)
     private CatGender gender;
     private Long followerCnt;

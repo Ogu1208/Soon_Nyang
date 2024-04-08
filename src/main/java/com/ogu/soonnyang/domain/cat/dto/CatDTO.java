@@ -3,7 +3,6 @@ package com.ogu.soonnyang.domain.cat.dto;
 import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.cat.entity.type.CatGender;
 import com.ogu.soonnyang.domain.cat.entity.type.CatState;
-import com.ogu.soonnyang.domain.member.entity.Member;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -16,7 +15,7 @@ public class CatDTO {
 
     private Long catId;
     private String name;
-    private Integer age;
+    private String age;
     private CatGender gender;
     private Long followerCnt;
     private String imageUrl;

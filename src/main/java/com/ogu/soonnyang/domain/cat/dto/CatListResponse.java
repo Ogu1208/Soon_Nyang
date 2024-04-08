@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class CatListResponse {
     private Long catId;
     private String name;
-    private Integer age;
+    private String age;
     private CatGender gender;
     private Long followerCnt;
     private String imageUrl;

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +31,7 @@ public class CatController {
     // 고양이 등록
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Long> insertCat(
-            @RequestPart(value = "cat") CatRequest catRequest,
+            @RequestPart(value = "cat") @Validated CatRequest catRequest,
             @RequestPart(value = "file", required = false) MultipartFile image) {
         LOGGER.info("=========================insertCat===================================");
         Long memberId = 1L;
@@ -59,7 +60,7 @@ public class CatController {
     @PutMapping("/{catId}")
     public ResponseEntity<MessageDTO> updateCat(
             @PathVariable("catId") Long catId,
-            @RequestPart(value = "cat") CatRequest catRequest,
+            @RequestPart(value = "cat") @Validated CatRequest catRequest,
             @RequestPart(value = "file", required = false) MultipartFile image) {
 
         catService.updateCat(catId, catRequest, image);
