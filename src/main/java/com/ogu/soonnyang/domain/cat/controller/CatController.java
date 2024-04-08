@@ -2,21 +2,24 @@ package com.ogu.soonnyang.domain.cat.controller;
 
 import com.ogu.soonnyang.common.dto.MessageDTO;
 import com.ogu.soonnyang.domain.cat.dto.CatDetailResponse;
-import com.ogu.soonnyang.domain.cat.dto.CatRequest;
 import com.ogu.soonnyang.domain.cat.dto.CatListResponse;
+import com.ogu.soonnyang.domain.cat.dto.CatRequest;
 import com.ogu.soonnyang.domain.cat.service.CatService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.util.List;
 
+@Tag(name = "Cats", description = "Cats 관련 API 입니다.")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/cats")
@@ -25,8 +28,7 @@ public class CatController {
     private final CatService catService;
 
     // 고양이 등록
-    @Transactional
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Long> insertCat(
             @RequestPart(value = "cat") CatRequest catRequest,
             @RequestPart(value = "file", required = false) MultipartFile image) {
@@ -37,7 +39,7 @@ public class CatController {
     }
 
     // 고양이 리스트 조회
-    @Transactional(readOnly = true)
+
     @GetMapping
     public ResponseEntity<List<CatListResponse>> getCats() {
         Long memberId = 1L;
@@ -46,7 +48,7 @@ public class CatController {
     }
 
     // 특정 고양이 상세 조회
-    @Transactional(readOnly = true)
+    @Operation(operationId = "CatDetails", summary = "고양이 상세 조회", description = "고양이 정보를 상세 조회한다.")
     @GetMapping("/{catId}")
     public ResponseEntity<CatDetailResponse> getCat(@PathVariable("catId") Long catId) {
         CatDetailResponse catDetailResp = catService.getCat(catId);
@@ -54,7 +56,6 @@ public class CatController {
     }
 
     // 특정 고양이 수정
-    @Transactional
     @PutMapping("/{catId}")
     public ResponseEntity<MessageDTO> updateCat(
             @PathVariable("catId") Long catId,
@@ -73,7 +74,6 @@ public class CatController {
     }
 
     // 특정 고양이 삭제
-    @Transactional
     @DeleteMapping("/{catId}")
     public ResponseEntity<MessageDTO> deleteCat(@PathVariable("catId") Long catId) {
         catService.deleteCat(catId);
