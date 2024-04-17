@@ -4,6 +4,7 @@ import com.ogu.soonnyang.common.dto.MessageDTO;
 import com.ogu.soonnyang.domain.cat.dto.response.CatDetailResponse;
 import com.ogu.soonnyang.domain.cat.dto.response.CatListResponse;
 import com.ogu.soonnyang.domain.cat.dto.request.CatRequest;
+import com.ogu.soonnyang.domain.cat.dto.response.PostSpotResponse;
 import com.ogu.soonnyang.domain.cat.service.CatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @Tag(name = "Cats", description = "Cats 관련 API 입니다.")
 @RestController
@@ -46,6 +48,17 @@ public class CatController {
         Long memberId = 1L;
         List<CatListResponse> catListResponses = catService.getCats(memberId);
         return ResponseEntity.ok().body(catListResponses);
+    }
+
+    @Operation(operationId = "CatSpotsTop10", summary = "최근 고양이 위치 10개 조회", description = "최근 고양이 게시글을 통한 위치 10개를 가져온다.")
+    @GetMapping("/{catId}/spots")
+    public ResponseEntity<List<PostSpotResponse>> getCatSpots(@PathVariable("catId") Long catId) {
+//        Claims claims = tokenUtils.getClaimsFromRequest(request);
+//        Long memberId = claims.get("member_id").toString();
+        Long memberId = 1L;
+
+        List<PostSpotResponse> catRecentPostsLocations = catService.getCatSpotsRecent10(memberId, catId);
+        return ResponseEntity.ok().body(catRecentPostsLocations);
     }
 
     // 특정 고양이 상세 조회

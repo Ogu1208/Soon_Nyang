@@ -3,9 +3,9 @@ package com.ogu.soonnyang.domain.member.repository;
 import com.ogu.soonnyang.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+import java.util.Optional;
 
-    Member findByMemberId(Long memberId);
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Member getByEmail(String email);
 
