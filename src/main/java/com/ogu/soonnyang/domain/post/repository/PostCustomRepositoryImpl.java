@@ -2,8 +2,8 @@ package com.ogu.soonnyang.domain.post.repository;
 
 import com.ogu.soonnyang.domain.cat.entity.QCat;
 import com.ogu.soonnyang.domain.member.entity.QMember;
-import com.ogu.soonnyang.domain.post.dto.PostListResponse;
-import com.ogu.soonnyang.domain.post.dto.QPostListResponse;
+import com.ogu.soonnyang.domain.post.dto.PostResponse;
+import com.ogu.soonnyang.domain.post.dto.QPostResponse;
 import com.ogu.soonnyang.domain.post.entity.QPost;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,9 +24,9 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     QMember qMember = QMember.member;
 
     @Override
-    public Page<PostListResponse> findAllNotDeleted(Pageable pageable) {
-        List<PostListResponse> content = jpaQueryFactory
-                .select(new QPostListResponse(qPost, qCat, qMember))
+    public Page<PostResponse> findAllNotDeleted(Pageable pageable) {
+        List<PostResponse> content = jpaQueryFactory
+                .select(new QPostResponse(qPost, qCat, qMember))
                 .from(qPost)
                 .leftJoin(qPost.cat, qCat)
                 .leftJoin(qPost.member, qMember)
