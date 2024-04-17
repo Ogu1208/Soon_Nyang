@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class PostCustomRepositoryImpl implements PostCustomRepository {
@@ -41,4 +42,19 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
         return PageableExecutionUtils.getPage(content, pageable, totalCount::fetchOne);
     }
+
+    @Override
+    public Optional<PostResponse> getPostById(Long postId) {
+        PostResponse content = jpaQueryFactory
+                .select(new QPostResponse(qPost, qCat, qMember))
+                .from(qPost)
+                .leftJoin(qPost.cat, qCat)
+                .leftJoin(qPost.member, qMember)
+                .where(qPost.postId.eq(postId)) // postId에 해당하는 게시물만 조회
+                .fetchOne(); // 결과가 하나인 경우 fetchOne() 사용
+
+        return Optional.ofNullable(content); // 결과가 없을 수 있으므로 Optional로 감싸서 반환
+    }
+
+
 }

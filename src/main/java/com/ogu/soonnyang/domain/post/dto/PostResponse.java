@@ -22,8 +22,8 @@ public class PostResponse {
     private Long postId;
     private CatDetailResponse catDetailResponse;
     private MemberDetailResponse memberDetailResponse;
-    private Float latitude;
-    private Float longitude;
+    private Double latitude;
+    private Double longitude;
     private String content;
     private String image;
     private Long likeCount;

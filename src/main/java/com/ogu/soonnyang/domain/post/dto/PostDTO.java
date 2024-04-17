@@ -14,8 +14,8 @@ public class PostDTO {
     private Long postId;
     private MemberDTO memberDTO;
     private CatDTO catDTO;
-    private float latitude;
-    private float longitude;
+    private Double latitude;
+    private Double longitude;
     private String content;
 
 //    public static PostDTO of(MemberDTO memberDTO, String title, String content, Set<HashtagDto> hashtagDtos) {
