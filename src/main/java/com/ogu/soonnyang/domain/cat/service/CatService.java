@@ -1,16 +1,23 @@
 package com.ogu.soonnyang.domain.cat.service;
 
+import com.ogu.soonnyang.domain.cat.dto.request.CatRequest;
 import com.ogu.soonnyang.domain.cat.dto.response.CatDetailResponse;
 import com.ogu.soonnyang.domain.cat.dto.response.CatListResponse;
-import com.ogu.soonnyang.domain.cat.dto.request.CatRequest;
+import com.ogu.soonnyang.domain.cat.dto.response.PostSpotResponse;
 import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.cat.entity.type.CatState;
 import com.ogu.soonnyang.domain.cat.repository.CatCustomRepository;
 import com.ogu.soonnyang.domain.cat.repository.CatRepository;
+import com.ogu.soonnyang.domain.member.entity.Member;
+import com.ogu.soonnyang.domain.member.repository.MemberRepository;
+import com.ogu.soonnyang.domain.post.entity.Post;
+import com.ogu.soonnyang.domain.post.repository.PostCustomRepository;
+import com.ogu.soonnyang.domain.post.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +31,8 @@ public class CatService {
     private final CatFactory catFactory;
     private final CatRepository catRepository;
     private final CatCustomRepository catCustomRepository;
+    private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
 
     /* POST) 고양이 생성 */
     @Transactional
@@ -64,6 +73,22 @@ public class CatService {
                 .orElseThrow(() -> new EntityNotFoundException("Cat not found with id: " + catId));
 
         return CatDetailResponse.from(cat);
+    }
+
+    /* GET) 고양이 최근 10개 게시글 위치 조회 */
+    @Transactional(readOnly = true)
+    public List<PostSpotResponse> getCatSpotsRecent10(Long memberId, Long catId) {
+//        Member member = memberRepository.findById(memberId)
+//                .orElseThrow(() -> new IllegalArgumentException("not found member with id: " + memberId));
+
+        Cat cat = catRepository.findById(catId)
+                .orElseThrow(() -> new IllegalArgumentException("not found Cat with id: " + catId));
+
+        List<Post> top10Posts = postRepository.findTop10ByCat_CatIdOrderByCreatedAtDesc(catId)
+                .orElseThrow(() -> new EmptyResultDataAccessException("해당 고양이에 아직 게시글이 없습니다. catId: " + catId, 1)
+        );
+
+        return top10Posts.stream().map(PostSpotResponse::fromPost).toList();
     }
 
     @Transactional
