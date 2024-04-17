@@ -2,7 +2,7 @@ package com.ogu.soonnyang.domain.post.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.ogu.soonnyang.domain.cat.dto.CatDetailResponse;
+import com.ogu.soonnyang.domain.cat.dto.response.CatDetailResponse;
 import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.member.dto.MemberDetailResponse;
 import com.ogu.soonnyang.domain.member.entity.Member;
@@ -11,6 +11,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 
 @Data
 @Builder
@@ -53,5 +54,20 @@ public class PostListResponse {
         this.content = post.getContent();
         this.image = post.getImage();
         this.createdAt = post.getCreatedAt();
+    }
+
+    public static String randomLikeOrUnlike() {
+        Random random = new Random();
+        int randomNum = random.nextInt(2); // 0 또는 1을 반환
+        if (randomNum == 0) {
+            return "like";
+        } else {
+            return "unlike";
+        }
+    }
+
+    public static Long randomLikeCount() {
+        Random random = new Random();
+        return random.nextLong(20);
     }
 }

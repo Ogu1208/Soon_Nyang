@@ -1,4 +1,4 @@
-package com.ogu.soonnyang.domain.cat.dto;
+package com.ogu.soonnyang.domain.cat.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ogu.soonnyang.domain.cat.entity.type.CatGender;

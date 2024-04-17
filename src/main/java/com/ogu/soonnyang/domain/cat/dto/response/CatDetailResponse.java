@@ -1,4 +1,4 @@
-package com.ogu.soonnyang.domain.cat.dto;
+package com.ogu.soonnyang.domain.cat.dto.response;
 
 import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.cat.entity.type.CatGender;

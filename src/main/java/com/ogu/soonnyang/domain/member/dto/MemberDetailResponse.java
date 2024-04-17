@@ -1,7 +1,5 @@
 package com.ogu.soonnyang.domain.member.dto;
 
-import com.ogu.soonnyang.domain.cat.dto.CatDetailResponse;
-import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.member.entity.Member;
 import lombok.*;
 

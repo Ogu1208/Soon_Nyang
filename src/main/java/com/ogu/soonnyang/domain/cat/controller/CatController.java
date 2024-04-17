@@ -1,9 +1,9 @@
 package com.ogu.soonnyang.domain.cat.controller;
 
 import com.ogu.soonnyang.common.dto.MessageDTO;
-import com.ogu.soonnyang.domain.cat.dto.CatDetailResponse;
-import com.ogu.soonnyang.domain.cat.dto.CatListResponse;
-import com.ogu.soonnyang.domain.cat.dto.CatRequest;
+import com.ogu.soonnyang.domain.cat.dto.response.CatDetailResponse;
+import com.ogu.soonnyang.domain.cat.dto.response.CatListResponse;
+import com.ogu.soonnyang.domain.cat.dto.request.CatRequest;
 import com.ogu.soonnyang.domain.cat.service.CatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

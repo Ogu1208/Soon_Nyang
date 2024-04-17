@@ -28,7 +28,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostFactory postFactory;
 
-    public Long createBoard(Long member_id, List<MultipartFile> multipartFiles, CreatePostRequest createPostRequest) {
+    public Long createPost(Long member_id, List<MultipartFile> multipartFiles, CreatePostRequest createPostRequest) {
         Member member = memberRepository.findById(member_id).orElseThrow(() -> new IllegalArgumentException("사용자 ID 확인해달라 냥!"));
         Cat cat = catRepository.findById(createPostRequest.getCatId()).orElseThrow(() -> new IllegalArgumentException("고양이 ID 확인해달라 냥!"));
 
@@ -47,7 +47,9 @@ public class PostService {
 
         for (PostListResponse postListRespons : postListResponses) {
             postListRespons.setMyEmotion("like");
-            // TODO: 직접 가져와서 좋아요 여부 setting
+            postListRespons.setMyEmotion(PostListResponse.randomLikeOrUnlike());
+            postListRespons.setLikeCount(PostListResponse.randomLikeCount());
+            // TODO: 직접 가져와서 좋아요 여부, 좋아요 개수 setting
 //            postListRespons.setMyEmotion(postLikeRepository.checkReation(memberId, postListRespons.getPostId()));
         }
 

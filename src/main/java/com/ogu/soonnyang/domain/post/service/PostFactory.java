@@ -23,6 +23,7 @@ public class PostFactory {
                 .longitude(request.getLongitude())
                 .content(request.getContent())
                 .image(imgUrl)
+                .likeCount(0L)
                 .member(member)
                 .cat(cat)
                 .build();

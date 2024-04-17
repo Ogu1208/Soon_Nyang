@@ -1,6 +1,6 @@
 package com.ogu.soonnyang.domain.cat.service;
 
-import com.ogu.soonnyang.domain.cat.dto.CatRequest;
+import com.ogu.soonnyang.domain.cat.dto.request.CatRequest;
 import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.cat.entity.type.CatState;
 import com.ogu.soonnyang.domain.cat.repository.CatRepository;

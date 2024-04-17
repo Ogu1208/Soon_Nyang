@@ -1,11 +1,7 @@
 package com.ogu.soonnyang.domain.cat.repository;
 
-import com.ogu.soonnyang.domain.cat.dto.CatListResponse;
-import com.querydsl.core.types.dsl.NumberExpression;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor

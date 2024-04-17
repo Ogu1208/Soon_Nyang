@@ -28,8 +28,7 @@ public class Post extends BaseTimeEntity {
 
     private String image;
 
-    @Builder.Default
-    private Long likeCount = 0L;
+    private Long likeCount;
 
     // OneToMany 관계 설정
 //    @OneToMany(mappedBy = "board")

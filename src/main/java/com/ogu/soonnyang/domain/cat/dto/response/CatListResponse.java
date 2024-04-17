@@ -1,4 +1,4 @@
-package com.ogu.soonnyang.domain.cat.dto;
+package com.ogu.soonnyang.domain.cat.dto.response;
 
 import com.ogu.soonnyang.domain.cat.entity.Cat;
 import com.ogu.soonnyang.domain.cat.entity.type.CatGender;
@@ -6,6 +6,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Random;
 
 @Data
 @Builder
@@ -19,7 +20,7 @@ public class CatListResponse {
     private Long followerCnt;
     private String imageUrl;
     private LocalDate TNRDate;
-    private Long isFollowing;
+    private int isFollowing;
 
 
     public static CatListResponse from(Cat cat) {
@@ -31,12 +32,12 @@ public class CatListResponse {
                 .followerCnt(cat.getFollowerCnt())
                 .imageUrl(cat.getImageUrl())
                 .TNRDate(cat.getTNRDate())
-                .isFollowing(0L)
+                .isFollowing(randomZeroOrOne())
                 .build();
     }
 
     @QueryProjection
-    public CatListResponse(Cat cat, Long isFollowing) {
+    public CatListResponse(Cat cat, int isFollowing) {
         this.catId = cat.getCatId();
         this.name = cat.getName();
         this.age = cat.getAge();
@@ -44,5 +45,10 @@ public class CatListResponse {
         this.followerCnt = cat.getFollowerCnt();
         this.imageUrl = cat.getImageUrl();
         this.isFollowing = isFollowing;
+    }
+
+    private static int randomZeroOrOne() {
+        Random random = new Random();
+        return random.nextInt(2);
     }
 }
