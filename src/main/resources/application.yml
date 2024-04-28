@@ -9,3 +9,22 @@ spring:
         - db-dev
     include:
       - db
+
+  # multipart 설정
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+# aws 설정
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: umust-homepage-s3
+    stack:
+      auto: false
+    credentials:
+      secret-key: ${s3_secret_key}
+      access-key: ${s3_access_key}
