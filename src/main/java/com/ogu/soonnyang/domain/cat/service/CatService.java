@@ -105,14 +105,14 @@ public class CatService {
 //            throw new IllegalArgumentException("파일 업로드에 실패했습니다 : cat upload failed");
 //        }
         Cat cat = catRepository.findById(catId)
-                .orElseThrow(() -> new IllegalArgumentException("Thesis not found with Id : " + catId));
+                .orElseThrow(() -> new IllegalArgumentException("Cat not found with Id : " + catId));
         cat.updateCat(catRequest, imgUrl);
     }
 
     @Transactional
     public void deleteCat(Long catId) {
         Cat cat = catRepository.findById(catId)
-                .orElseThrow(() -> new IllegalArgumentException("Thesis not found with Id : " + catId));
+                .orElseThrow(() -> new IllegalArgumentException("Cat not found with Id : " + catId));
         cat.deleteCat(catId);
     }
 }

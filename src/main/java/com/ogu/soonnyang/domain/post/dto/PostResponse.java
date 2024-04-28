@@ -17,13 +17,13 @@ import java.util.Random;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class PostListResponse {
+public class PostResponse {
 
     private Long postId;
     private CatDetailResponse catDetailResponse;
     private MemberDetailResponse memberDetailResponse;
-    private Float latitude;
-    private Float longitude;
+    private Double latitude;
+    private Double longitude;
     private String content;
     private String image;
     private Long likeCount;
@@ -32,8 +32,8 @@ public class PostListResponse {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createdAt;
 
-    public static PostListResponse from(Post post) {
-        return PostListResponse.builder()
+    public static PostResponse from(Post post) {
+        return PostResponse.builder()
                 .postId(post.getPostId())
                 .catDetailResponse(CatDetailResponse.from(post.getCat()))
                 .memberDetailResponse(MemberDetailResponse.from(post.getMember()))
@@ -45,7 +45,7 @@ public class PostListResponse {
     }
 
     @QueryProjection
-    public PostListResponse(Post post, Cat cat, Member member) {
+    public PostResponse(Post post, Cat cat, Member member) {
         this.postId = post.getPostId();
         this.catDetailResponse = CatDetailResponse.from(cat);
         this.memberDetailResponse = MemberDetailResponse.from(member);

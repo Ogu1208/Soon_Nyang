@@ -13,8 +13,8 @@ public class PostSpotResponse {
 
     private Long postId;
     private String image;
-    private Float latitude;
-    private Float longitude;
+    private Double latitude;
+    private Double longitude;
     private LocalDateTime createdAt;
 
     public static PostSpotResponse fromPost(Post post) {

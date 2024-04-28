@@ -2,7 +2,7 @@ package com.ogu.soonnyang.domain.post.controller;
 
 import com.ogu.soonnyang.domain.cat.controller.CatController;
 import com.ogu.soonnyang.domain.post.dto.CreatePostRequest;
-import com.ogu.soonnyang.domain.post.dto.PostListResponse;
+import com.ogu.soonnyang.domain.post.dto.PostResponse;
 import com.ogu.soonnyang.domain.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,7 +44,7 @@ public class PostController {
 
     @Operation(operationId = "Post List", summary = "Post 리스트 조회", description = "Post List를 상세 조회한다.")
     @GetMapping
-    public ResponseEntity<Page<PostListResponse>> searchAllBoard(@PageableDefault(size = 100) Pageable pageable) {
+    public ResponseEntity<Page<PostResponse>> searchAllBoard(@PageableDefault(size = 100) Pageable pageable) {
 //        Claims claims = tokenUtils.getClaimsFromRequest(request);
 //        UUID memberId = UUID.fromString(claims.get("member_id").toString());
         Long memberId = 1L;
@@ -52,4 +52,13 @@ public class PostController {
         return ResponseEntity.ok().body(postService.searchAllPost(memberId, pageable));
     }
 
+    @Operation(operationId = "postDetail", summary = "게시글 단건 조회", description = "postId 로 단건 조회한다.")
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponse> getPost(@PathVariable("postId") Long catId) {
+//        Claims claims = tokenUtils.getClaimsFromRequest(request);
+//        UUID memberId = UUID.fromString(claims.get("member_id").toString());
+        Long memberId = 1L;
+
+        return ResponseEntity.ok().body(postService.getPostByPostId(memberId, catId));
+    }
 }

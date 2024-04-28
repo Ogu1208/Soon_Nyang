@@ -2,8 +2,8 @@ package com.ogu.soonnyang.domain.post.repository;
 
 import com.ogu.soonnyang.domain.cat.entity.QCat;
 import com.ogu.soonnyang.domain.member.entity.QMember;
-import com.ogu.soonnyang.domain.post.dto.PostListResponse;
-import com.ogu.soonnyang.domain.post.dto.QPostListResponse;
+import com.ogu.soonnyang.domain.post.dto.PostResponse;
+import com.ogu.soonnyang.domain.post.dto.QPostResponse;
 import com.ogu.soonnyang.domain.post.entity.QPost;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class PostCustomRepositoryImpl implements PostCustomRepository {
@@ -24,9 +25,9 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     QMember qMember = QMember.member;
 
     @Override
-    public Page<PostListResponse> findAllNotDeleted(Pageable pageable) {
-        List<PostListResponse> content = jpaQueryFactory
-                .select(new QPostListResponse(qPost, qCat, qMember))
+    public Page<PostResponse> findAllNotDeleted(Pageable pageable) {
+        List<PostResponse> content = jpaQueryFactory
+                .select(new QPostResponse(qPost, qCat, qMember))
                 .from(qPost)
                 .leftJoin(qPost.cat, qCat)
                 .leftJoin(qPost.member, qMember)
@@ -41,4 +42,19 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
         return PageableExecutionUtils.getPage(content, pageable, totalCount::fetchOne);
     }
+
+    @Override
+    public Optional<PostResponse> getPostById(Long postId) {
+        PostResponse content = jpaQueryFactory
+                .select(new QPostResponse(qPost, qCat, qMember))
+                .from(qPost)
+                .leftJoin(qPost.cat, qCat)
+                .leftJoin(qPost.member, qMember)
+                .where(qPost.postId.eq(postId)) // postId에 해당하는 게시물만 조회
+                .fetchOne(); // 결과가 하나인 경우 fetchOne() 사용
+
+        return Optional.ofNullable(content); // 결과가 없을 수 있으므로 Optional로 감싸서 반환
+    }
+
+
 }
