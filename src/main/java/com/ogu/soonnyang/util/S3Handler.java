@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.util.UUID;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class S3Handler {
 
@@ -22,29 +24,45 @@ public class S3Handler {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String uploadFile(MultipartFile uploadFile, String dirName, String ext) throws IOException {
-        try {
-            String fileName = UUID.randomUUID() + "." + ext;
-            return putS3(uploadFile, fileName, dirName);
-        } catch (IOException e) {
-            throw new IOException("Failed to upload file to server with method : [uploadFile(MultipartFile uploadFile, String dirName, String ext)]", e);
-        }
-    }
+//    public String uploadPostFiles(MultipartFile uploadFile, String catName) throws IOException {
+//        String ext = getExt(uploadFile);
+//        String fileName = UUID.randomUUID() + "." + ext;
+//
+//        try {
+//            if (isImageFile(uploadFile)) {
+//                return putS3(uploadFile, fileName, "postImages/" + catName);
+//            } else {
+//                return putS3(uploadFile, fileName, "postFiles/" + catName);
+//            }
+//        } catch (IOException e) {
+//            throw new IOException("Failed to upload file to server with method : [uploadPostImage(MultipartFile uploadFile, String catName)]", e);
+//        }
+//    }
 
-    public String uploadFile(MultipartFile uploadFile) throws IOException {
+    public String uploadFile(MultipartFile uploadFile, String catName, String directory){
         String ext = getExt(uploadFile);
         String fileName = UUID.randomUUID() + "." + ext;
 
         try {
-            if (isImageFile(uploadFile)) {
-                return putS3(uploadFile, fileName, "images/");
-            } else {
-                return putS3(uploadFile, fileName, "files/");
-            }
+            return putS3(uploadFile, fileName, directory + "/" + catName + "/");
         } catch (IOException e) {
-            throw new IOException("Failed to upload file to server with method : [public String uploadFile(MultipartFile uploadFile)]", e);
+            log.error("Failed to upload file to server with method : [uploadFile(MultipartFile uploadFile, String catName, String directory)]", e);
+            return null;
         }
     }
+
+    public String uploadPostFiles(MultipartFile uploadFile, String catName){
+        if (isImageFile(uploadFile)) {
+            return uploadFile(uploadFile, catName, "postImages");
+        } else {
+            return uploadFile(uploadFile, catName, "postFiles");
+        }
+    }
+
+    public String uploadCatProfile(MultipartFile uploadFile, String catName){
+        return uploadFile(uploadFile, catName, "catProfiles");
+    }
+
 
     // S3로 업로드
     private String putS3(MultipartFile uploadFile, String fileName, String dirName) throws IOException {
@@ -67,7 +85,7 @@ public class S3Handler {
     }
 
     //파일 삭제
-    public void deleteFile(String fileUrl){
+    public void deleteFile(String fileUrl) {
         // "amazonaws.com/" 이후의 부분 추출
         String searchString = "amazonaws.com/";
         int findKeyIndex = fileUrl.lastIndexOf(searchString) + searchString.length();

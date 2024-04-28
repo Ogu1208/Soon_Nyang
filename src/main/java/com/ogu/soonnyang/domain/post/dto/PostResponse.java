@@ -11,6 +11,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 @Data
@@ -31,6 +32,7 @@ public class PostResponse {
     private String myEmotion;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createdAt;
+    private List<PostImageResponse> postImageResponses; // 이미지 URL을 담는 변수명을 files로 변경
 
     public static PostResponse from(Post post) {
         return PostResponse.builder()
@@ -41,6 +43,10 @@ public class PostResponse {
                 .longitude(post.getLongitude())
                 .content(post.getContent())
                 .likeCount(post.getLikeCount())
+                .postImageResponses(post.getFiles()
+                        .stream()
+                        .map(PostImageResponse::from)
+                        .toList())
                 .build();
     }
 
@@ -54,6 +60,10 @@ public class PostResponse {
         this.content = post.getContent();
         this.image = post.getImage();
         this.createdAt = post.getCreatedAt();
+        this.postImageResponses = post.getFiles()
+                .stream()
+                .map(PostImageResponse::from)
+                .toList();
     }
 
     public static String randomLikeOrUnlike() {
