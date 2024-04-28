@@ -22,7 +22,7 @@ cloud:
     region:
       static: ap-northeast-2
     s3:
-      bucket: umust-homepage-s3
+      bucket: s3-soonnyang
     stack:
       auto: false
     credentials:
