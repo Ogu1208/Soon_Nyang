@@ -4,7 +4,9 @@ import com.ogu.soonnyang.domain.cat.entity.QCat;
 import com.ogu.soonnyang.domain.member.entity.QMember;
 import com.ogu.soonnyang.domain.post.dto.PostResponse;
 import com.ogu.soonnyang.domain.post.dto.QPostResponse;
+import com.ogu.soonnyang.domain.post.entity.Post;
 import com.ogu.soonnyang.domain.post.entity.QPost;
+import com.ogu.soonnyang.domain.post.entity.QPostImage;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +46,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     }
 
     @Override
-    public Optional<PostResponse> getPostById(Long postId) {
+    public Optional<PostResponse> getPostResponseById(Long postId) {
         PostResponse content = jpaQueryFactory
                 .select(new QPostResponse(qPost, qCat, qMember))
                 .from(qPost)

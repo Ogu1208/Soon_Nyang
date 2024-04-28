@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface PostCustomRepository {
     Page<PostResponse> findAllNotDeleted(Pageable pageable);
-    Optional<PostResponse> getPostById(Long postId);
+    Optional<PostResponse> getPostResponseById(Long postId);
 }

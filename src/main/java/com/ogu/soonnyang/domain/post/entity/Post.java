@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -33,6 +35,9 @@ public class Post extends BaseTimeEntity {
     // OneToMany 관계 설정
 //    @OneToMany(mappedBy = "board")
 //    private List<PostLike> likeList;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PostImage> files;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

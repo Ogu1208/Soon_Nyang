@@ -37,7 +37,7 @@ public class PostController {
         Long memberId = 1L;
 
         // 게시물 등록
-        Long postId = postService.createPost(memberId, multipartFiles, createPostRequest);
+        Long postId = postService.createPostWithImages(memberId, multipartFiles, createPostRequest);
 
         return ResponseEntity.created(URI.create("/v1/posts/" + postId)).build();
     }

@@ -16,13 +16,12 @@ public class PostFactory {
     private final PostRepository postRepository;
 
     @Transactional
-    public Post save(CreatePostRequest request, Member member, Cat cat, String imgUrl) {
+    public Post save(CreatePostRequest request, Member member, Cat cat) {
 
         Post post = Post.builder()
                 .latitude(request.getLatitude())
                 .longitude(request.getLongitude())
                 .content(request.getContent())
-                .image(imgUrl)
                 .likeCount(0L)
                 .member(member)
                 .cat(cat)

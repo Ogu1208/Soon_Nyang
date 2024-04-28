@@ -24,6 +24,7 @@ public class BaseTimeEntity {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @LastModifiedDate
+    @Column(updatable = false) //수정시때는 발동하지 않는 옵션
     private LocalDateTime modifiedAt; // 수정일시
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
