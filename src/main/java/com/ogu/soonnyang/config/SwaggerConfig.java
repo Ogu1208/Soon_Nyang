@@ -27,12 +27,23 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public GroupedOpenApi getThesisAPI() {
+    public GroupedOpenApi getPostAPI() {
         // "/v1/**" 경로에 매칭되는 API를 그룹화하여 문서화
         String[] paths = {"/v1/posts/**"};
 
         return GroupedOpenApi.builder()
                 .group("Posts")  // 그룹 이름을 설정
+                .pathsToMatch(paths)     // 그룹에 속하는 경로 패턴을 지정
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi getPostImageAPI() {
+        // "/v1/**" 경로에 매칭되는 API를 그룹화하여 문서화
+        String[] paths = {"/v1/postImages/**"};
+
+        return GroupedOpenApi.builder()
+                .group("PostImages")  // 그룹 이름을 설정
                 .pathsToMatch(paths)     // 그룹에 속하는 경로 패턴을 지정
                 .build();
     }
