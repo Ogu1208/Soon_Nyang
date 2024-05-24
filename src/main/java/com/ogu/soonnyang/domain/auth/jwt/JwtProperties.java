@@ -1,4 +1,4 @@
-package com.ogu.soonnyang.auth.jwt;
+package com.ogu.soonnyang.domain.auth.jwt;
 
 import lombok.Getter;
 import lombok.Setter;

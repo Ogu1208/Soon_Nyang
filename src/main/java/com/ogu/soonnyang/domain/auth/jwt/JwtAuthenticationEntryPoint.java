@@ -1,4 +1,4 @@
-package com.ogu.soonnyang.auth.jwt;
+package com.ogu.soonnyang.domain.auth.jwt;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

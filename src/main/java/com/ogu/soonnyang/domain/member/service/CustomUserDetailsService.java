@@ -1,7 +1,6 @@
 package com.ogu.soonnyang.domain.member.service;
 
 import com.ogu.soonnyang.domain.member.entity.Member;
-import com.ogu.soonnyang.domain.member.exception.MemberNotFoundException;
 import com.ogu.soonnyang.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

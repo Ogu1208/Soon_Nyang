@@ -1,12 +1,11 @@
 package com.ogu.soonnyang.util;
 
-import com.ogu.soonnyang.auth.jwt.JwtProperties;
+import com.ogu.soonnyang.domain.auth.jwt.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j

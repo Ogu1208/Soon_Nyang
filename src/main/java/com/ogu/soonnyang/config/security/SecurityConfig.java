@@ -1,19 +1,27 @@
 package com.ogu.soonnyang.config.security;
 
-import com.ogu.soonnyang.auth.jwt.JwtAuthenticationEntryPoint;
-import com.ogu.soonnyang.auth.jwt.JwtAccessDeniedHandler;
-import com.ogu.soonnyang.auth.jwt.JwtTokenProvider;
+import com.ogu.soonnyang.domain.auth.jwt.JwtAccessDeniedHandler;
+import com.ogu.soonnyang.domain.auth.jwt.JwtAuthenticationEntryPoint;
+import com.ogu.soonnyang.domain.auth.jwt.JwtAuthenticationFilter;
+import com.ogu.soonnyang.domain.auth.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -31,47 +39,51 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                // token을 사용하는 방식이기 때문에 csrf를 disable합니다.
-                .csrf().disable()
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .httpBasic(AbstractHttpConfigurer::disable) // REST API는 UI를 사용하지 않으므로 기본 설정 비활성화
+                .csrf(AbstractHttpConfigurer::disable) // REST API는 CSRF 보호가 필요 없으므로 비활성화
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 비활성화
 
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers(new AntPathRequestMatcher("/v1/auth/**")).permitAll() // 가입 및 로그인 주소는 허용
+                        .requestMatchers(HttpMethod.GET, "/product/**").permitAll() // product로 시작하는 GET 요청은 허용
+                        .requestMatchers(new AntPathRequestMatcher("**exception**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/healthCheck")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/favicon.ico")).permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/swagger/**").permitAll()
 
-                // enable h2-console
-                .and()
-                .headers()
-                .frameOptions()
-                .sameOrigin()
+                        // enable h2-console
+                        .requestMatchers(PathRequest.toH2Console()).permitAll() // H2 콘솔 접근 허용
+                        .requestMatchers("/h2-console/**").permitAll() // H2 콘솔 접근 허용
 
-                // 세션을 사용하지 않기 때문에 STATELESS로 설정
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .anyRequest().authenticated()) // 그 외 모든 요청은 인증 필요
 
-                .and()
-                .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
-                .requestMatchers("v1/api/authenticate").permitAll() // 로그인 api
-                .requestMatchers("v1/api/signup").permitAll() // 회원가입 api
-                .requestMatchers(PathRequest.toH2Console()).permitAll()// h2-console, favicon.ico 요청 인증 무시
-                .requestMatchers("/favicon.ico").permitAll()
-                .anyRequest().authenticated() // 그 외 인증 없이 접근X
 
-                .and()
-                .apply(new JwtSecurityConfig(jwtTokenProvider)); // JwtFilter를 addFilterBefore로 등록했던 JwtSecurityConfig class 적용
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler(jwtAccessDeniedHandler)
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint))
 
-        return httpSecurity.build();
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)) // H2 콘솔 사용을 위한 설정
+
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
+
+        return http.build();
+    }
+
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder, UserDetailService userDetailService) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userService)
-                .passwordEncoder(bCryptPasswordEncoder)
-                .and()
-                .build();
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring()
+                .requestMatchers("/v3/api-docs", "/swagger-resources/**",
+                        "/swagger-ui.html", "/webjars/**", "/swagger/**", "/sign-api/exception", "/swagger-ui/**")
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
-
 }

@@ -16,6 +16,28 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
+    public GroupedOpenApi getMembersAPI() {
+        // "/v1/**" 경로에 매칭되는 API를 그룹화하여 문서화
+        String[] paths = {"/v1/members/**"};
+
+        return GroupedOpenApi.builder()
+                .group("Members")  // 그룹 이름을 설정
+                .pathsToMatch(paths)     // 그룹에 속하는 경로 패턴을 지정
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi getAuthAPI() {
+        // "/v1/**" 경로에 매칭되는 API를 그룹화하여 문서화
+        String[] paths = {"/v1/auth/**"};
+
+        return GroupedOpenApi.builder()
+                .group("Auth")  // 그룹 이름을 설정
+                .pathsToMatch(paths)     // 그룹에 속하는 경로 패턴을 지정
+                .build();
+    }
+
+    @Bean
     public GroupedOpenApi getCatsAPI() {
         // "/v1/**" 경로에 매칭되는 API를 그룹화하여 문서화
         String[] paths = {"/v1/cats/**"};

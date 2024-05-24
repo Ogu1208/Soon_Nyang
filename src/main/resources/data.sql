@@ -26,6 +26,25 @@ VALUES ('kdasunb6@gmail.com', 'snsn22@@', '순냥이 집사 호소인', '2024-01
 INSERT INTO member(email, password, nickname, created_at)
 VALUES ('snsnjerry@gmail.com', 'snsn22@!', '루루는 해적선장', '2023-02-11 12:00:00');
 
+-- authority 테이블에 권한 정보 삽입
+INSERT INTO authority(authority_name)
+VALUES ('ROLE_USER'), ('ROLE_ADMIN');
+
+-- member_authority 테이블에 사용자와 권한 매핑 정보 삽입
+-- ID가 1인 사용자에게 ROLE_USER와 ROLE_ADMIN 부여
+INSERT INTO member_authority(member_id, authority_name)
+VALUES ((SELECT member_id FROM member WHERE email = 'kdasunb6@gmail.com'), 'ROLE_USER');
+
+INSERT INTO member_authority(member_id, authority_name)
+VALUES ((SELECT member_id FROM member WHERE email = 'kdasunb6@gmail.com'), 'ROLE_ADMIN');
+
+-- ID가 2인 사용자에게 ROLE_USER와 ROLE_ADMIN 부여
+INSERT INTO member_authority(member_id, authority_name)
+VALUES ((SELECT member_id FROM member WHERE email = 'snsnjerry@gmail.com'), 'ROLE_USER');
+
+INSERT INTO member_authority(member_id, authority_name)
+VALUES ((SELECT member_id FROM member WHERE email = 'snsnjerry@gmail.com'), 'ROLE_ADMIN');
+
 INSERT INTO post(latitude, longitude, content, image, like_count, member_id, cat_id, created_at)
 VALUES
     (36.77216953542685, 126.93216583484818 , '이 냐옹이님이 순냥이가 맞나용 귀여워..', 'https://velog.velcdn.com/images/ogu1208/post/2351ae5a-3026-453f-89f0-99e26817086d/image.jpg', 71, 1, 5, '2024-03-06 13:15:00'),

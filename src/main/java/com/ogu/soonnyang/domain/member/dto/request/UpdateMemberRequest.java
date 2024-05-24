@@ -9,4 +9,5 @@ import lombok.*;
 public class UpdateMemberRequest {
 
     private String nickname;
+    private String introduction;
 }

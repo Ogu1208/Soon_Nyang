@@ -1,4 +1,4 @@
-package com.ogu.soonnyang.auth.jwt;
+package com.ogu.soonnyang.domain.auth.jwt;
 
 import com.ogu.soonnyang.domain.member.entity.Member;
 import com.ogu.soonnyang.domain.member.exception.MemberNotFoundException;
@@ -10,13 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.Date;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -31,17 +33,21 @@ public class JwtTokenProvider {
     private final long tokenValidMillisecond = 1000L * 60 * 60 * 24 * 7; // 7일 토큰 유효
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    // 예제 13.12
-    // JWT 토큰 생성
-    public String createToken(String userUid, List<String> roles) {
+    public String createToken(String email) {
         LOGGER.info("[createToken] 토큰 생성 시작");
-        Claims claims = Jwts.claims().setSubject(userUid); //sub가 필요없긴 하지만 쓰는 메소드가 있어서 일단 쓰기로
-        Member member = memberRepository.findById(Long.valueOf(userUid))
-                .orElseThrow(() -> new MemberNotFoundException("Member not found with ID: " + userUid));
-        //여기서 token에 필요한 정보들을 담을 수 있음
-        claims.put("email", userUid);
+
+        String secretKey = Base64.getEncoder().encodeToString(jwtProperties.getSecretKey().getBytes());
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberNotFoundException("Member not found with email: " + email));
+
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("email", member.getEmail());
         claims.put("member_id", member.getMemberId());
         claims.put("nickname", member.getNickname());
+        claims.put("roles", member.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList())); // roles 추가
 
         Date now = new Date();
         String token = Jwts.builder()
@@ -51,7 +57,8 @@ public class JwtTokenProvider {
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + tokenValidMillisecond))
                 .setSubject(member.getEmail())
-                .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey()) // 암호화 알고리즘, secret 값 세팅
+//                .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey()) // 암호화 알고리즘, secret 값 세팅
+                .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret 값 세팅
                 .compact();
 
         LOGGER.info("[createToken] 토큰 생성 완료");
@@ -72,8 +79,11 @@ public class JwtTokenProvider {
     // 예제 13.14
     // JWT 토큰에서 회원 구별 정보 추출
     public String getUsername(String token) {
+        String secretKey = Base64.getEncoder().encodeToString(jwtProperties.getSecretKey().getBytes());
         LOGGER.info("[getUsername] 토큰 기반 회원 구별 정보 추출");
-        String info = Jwts.parser().setSigningKey(jwtProperties.getSecretKey()).parseClaimsJws(token).getBody()
+//        String info = Jwts.parser().setSigningKey(jwtProperties.getSecretKey()).parseClaimsJws(token).getBody()
+//                .getSubject();
+        String info = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
                 .getSubject();
         LOGGER.info("[getUsername] 토큰 기반 회원 구별 정보 추출 완료, info : {}", info);
         return info;
@@ -81,14 +91,18 @@ public class JwtTokenProvider {
 
     // JWT 토큰의 유효성 + 만료일 체크
     public boolean validateToken(String token) {
+
+        String secretKey = Base64.getEncoder().encodeToString(jwtProperties.getSecretKey().getBytes());
         LOGGER.info("[validateToken] 토큰 유효 체크 시작");
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(jwtProperties.getSecretKey())
+//                    .setSigningKey(jwtProperties.getSecretKey())
+                    .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+        } catch (io.jsonwebtoken.security.SecurityException |
+                 MalformedJwtException e) {
 
             LOGGER.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {

@@ -19,7 +19,7 @@ spring:
 # jwt
 jwt:
   issuer: soonyang222@naver.com
-  secret_key: sch-cse-snsn
+  secret_key: sch-cse-Capstone Design-soonNyang
 
 # aws 설정
 cloud:

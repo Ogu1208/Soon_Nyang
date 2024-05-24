@@ -1,4 +1,4 @@
-package com.ogu.soonnyang.auth.jwt;
+package com.ogu.soonnyang.domain.auth.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -23,7 +24,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String resolveToken(HttpServletRequest request) {
-        return request.getHeader(AUTHORIZATION_HEADER);
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return bearerToken;
     }
 
     @Override

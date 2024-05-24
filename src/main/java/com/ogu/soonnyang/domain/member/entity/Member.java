@@ -3,6 +3,7 @@ package com.ogu.soonnyang.domain.member.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ogu.soonnyang.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,11 +11,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -31,16 +31,25 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email; // 회원 ID (JWT 토큰 내 정보)
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Json 으로 직렬화할 때 포함 x로 민감 데이터 보호
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    // Json 으로 직렬화할 때 포함 x로 민감 데이터 보호
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String nickname;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
+    @Size(max = 100, message = "소개는 최대 100자까지 입력할 수 있습니다.")
+    @Column(length = 100)
+    private String introduction ;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "member_authority",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_name")
+    )
+    private Set<Authority> authorities = new HashSet<>();
 
     // 비밀번호 변경
     public void updatePassword(String newPassword) {
@@ -52,9 +61,15 @@ public class Member extends BaseTimeEntity implements UserDetails {
         this.nickname = nickname;
     }
 
+    public void updateIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        return this.authorities.stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
+                .collect(Collectors.toList());
     }
 
     // security 에서 사용하는 회원 구분 id (고유)
