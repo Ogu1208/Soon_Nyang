@@ -16,6 +16,11 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
 
+# jwt
+jwt:
+  issuer: soonyang222@naver.com
+  secret_key: sch-cse-snsn
+
 # aws 설정
 cloud:
   aws:
