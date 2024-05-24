@@ -7,25 +7,87 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Member extends BaseTimeEntity {
+public class Member extends BaseTimeEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String email; // 회원 ID (JWT 토큰 내 정보)
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Json 결과로 출력하지 않을 데이터에 대해 해당 어노테이션 설정 값 추가
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Json 으로 직렬화할 때 포함 x로 민감 데이터 보호
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false, unique = true)
     private String nickname;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
+
+    // 비밀번호 변경
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
+    // 닉네임 변경
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    }
+
+    // security 에서 사용하는 회원 구분 id (고유)
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    // 계정 만료 여부 반환
+    @Override
+    public boolean isAccountNonExpired() {
+        // 만료되었는지 확인하는 로직
+        return true;  // true -> 만료되지 않음
+    }
+
+    // 계정 잠금 여부 반환
+    @Override
+    public boolean isAccountNonLocked() {
+        // 계정이 잠금되었는지 확인하는 로직
+        return true; // true -> 잠금되지 않음
+    }
+
+    // 패스워드의 만료 여부 반환
+    @Override
+    public boolean isCredentialsNonExpired() {
+        // 패스워드가 만료되었는지 확인하는 로직
+        return true;  // true -> 잠금되지 않음
+    }
+
+    // 계정 사용 가능 여부 반환
+    @Override
+    public boolean isEnabled() {
+        // 계정이 사용 가능한지 확인하는 로직
+        return true;  // true -> 사용 가능
+    }
 }
