@@ -19,6 +19,10 @@ public class TokenUtils {
     public Claims getClaimsFromRequest(HttpServletRequest request){
         String jwtToken = request.getHeader(AUTHORIZATION_HEADER);
 
+        if (jwtToken != null && jwtToken.startsWith("Bearer ")) {
+            jwtToken = jwtToken.substring("Bearer ".length());
+        }
+
         return Jwts.parser().setSigningKey(jwtProperties.getSecretKey().getBytes())
                 .parseClaimsJws(jwtToken).getBody();
     }
