@@ -39,3 +39,6 @@ spring:
       ddl-auto: create
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://awseb-e-nxkvugrrf5-stack-awsebrdsdatabase-wlkhngxcbsrx.cbwccmwigr9w.ap-northeast-2.rds.amazonaws.com:3306/ebdb
+    username: cseSoonNyang
+    password: snsn22cse

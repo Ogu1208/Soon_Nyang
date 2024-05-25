@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -24,16 +23,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        try {
+            String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
 
-        LOGGER.info("Header에서 가져온 Authorization token : {}", bearerToken);
+            LOGGER.info("Header에서 가져온 Authorization token : {}", bearerToken);
 
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-//            return bearerToken.substring(7);
-            return bearerToken.substring("Bearer ".length());
+            if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+                String token = bearerToken.substring("Bearer ".length());
+                LOGGER.info("Bearer 제거 후 token : {}", token);
+                return token;
+            }
+
+            LOGGER.warn("Authorization 헤더가 없거나 형식이 올바르지 않습니다.");
+            return bearerToken;
+        } catch (Exception e) {
+            LOGGER.error("resolveToken 메서드에서 예외 발생: ", e);
+            e.printStackTrace(); // 스택 트레이스를 콘솔에 출력합니다.
+            return null;
         }
-        return bearerToken;
     }
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest servletRequest,
