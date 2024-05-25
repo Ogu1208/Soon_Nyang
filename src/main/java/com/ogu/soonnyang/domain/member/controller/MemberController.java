@@ -39,12 +39,11 @@ public class MemberController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<?> getMember(HttpServletRequest request) {
         Claims claims = tokenUtils.getClaimsFromRequest(request);
-        Long memberId = (Long) claims.get("member_id");
+        Long memberId = Long.valueOf(claims.get("member_id").toString());
         String email = claims.get("email").toString();
-        String nickname = claims.get("nickname").toString();
 
         Member member = signService.getMember(memberId);
-        LOGGER.info("토큰에서 꺼낸 닉네임 : {}", nickname);
+        LOGGER.info("토큰에서 꺼낸 닉네임 : {}", member.getNickname());
 
         return ResponseEntity.ok(
                 MemberDetailResponse.from(member)

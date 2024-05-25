@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -39,36 +40,53 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Profile("db-local")
+    public SecurityFilterChain securityFilterChainLocal(HttpSecurity http) throws Exception {
         http
-                .httpBasic(AbstractHttpConfigurer::disable) // REST API는 UI를 사용하지 않으므로 기본 설정 비활성화
-                .csrf(AbstractHttpConfigurer::disable) // REST API는 CSRF 보호가 필요 없으므로 비활성화
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 비활성화
-
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(new AntPathRequestMatcher("/v1/auth/**")).permitAll() // 가입 및 로그인 주소는 허용
-                        .requestMatchers(HttpMethod.GET, "/product/**").permitAll() // product로 시작하는 GET 요청은 허용
+                        .requestMatchers(new AntPathRequestMatcher("/v1/auth/**")).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                         .requestMatchers(new AntPathRequestMatcher("**exception**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/healthCheck")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/favicon.ico")).permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/swagger/**").permitAll()
-
-                        // enable h2-console
-                        .requestMatchers(PathRequest.toH2Console()).permitAll() // H2 콘솔 접근 허용
-                        .requestMatchers("/h2-console/**").permitAll() // H2 콘솔 접근 허용
-
-                        .anyRequest().authenticated()) // 그 외 모든 요청은 인증 필요
-
-
+                        .requestMatchers(PathRequest.toH2Console()).permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .anyRequest().authenticated())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))
-
                 .headers(headers -> headers
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)) // H2 콘솔 사용을 위한 설정
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
+        return http.build();
+    }
+
+    @Bean
+    @Profile("db-dev")
+    public SecurityFilterChain securityFilterChainDev(HttpSecurity http) throws Exception {
+        http
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers(new AntPathRequestMatcher("/v1/auth/**")).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("**exception**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/healthCheck")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/favicon.ico")).permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**", "/swagger/**").permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler(jwtAccessDeniedHandler)
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

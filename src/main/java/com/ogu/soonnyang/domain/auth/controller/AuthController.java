@@ -9,8 +9,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +63,7 @@ public class AuthController {
 
     @PostMapping(value = "/sign-up")
     public MemberDTO signUp(@RequestBody SignUpRequest form) {
-        log.info("[signUp] 회원가입을 수행합니다. id : {}, password : ****",form.getEmail());
+        log.info("[signUp] 회원가입을 수행합니다. id : {}, password : ****", form.getEmail());
 
         MemberDTO memberDTO = signService.signUp(form);
 
@@ -75,7 +73,7 @@ public class AuthController {
 
     @GetMapping(value = "/check-email")
     public ResponseEntity<Map<String, String>> checkDuplicateEmail(
-            @Parameter(description = "email", required = true) @RequestParam String email){
+            @Parameter(description = "email", required = true) @RequestParam String email) {
         Map<String, String> map = new HashMap<>();
         String YorN = signService.checkDuplicateEmail(email); //중복되면Y, 아니면N
         map.put("msg", YorN);

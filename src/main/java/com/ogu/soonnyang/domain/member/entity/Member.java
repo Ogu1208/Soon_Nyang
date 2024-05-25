@@ -65,6 +65,10 @@ public class Member extends BaseTimeEntity implements UserDetails {
         this.introduction = introduction;
     }
 
+    public Set<Authority> getRawAuthorities() {
+        return this.authorities;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities.stream()
